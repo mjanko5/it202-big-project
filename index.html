@@ -6,39 +6,40 @@
     <meta name="viewport" content="width=device-width">
     <title>Airport Atmosphere</title>
 
-<!--**-->    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-
-
     <style>
         .content {
             display: none;
             margin: 1em;
         }
     </style>
-    
-<!--MAP -->
-    
+
+    <!--MAP -->
     <meta name="viewport" content="initial-scale=1.0">
     <style>
-      /* Always set the map height explicitly to define the size of the div
+        /* Always set the map height explicitly to define the size of the div
        * element that contains the map. */
-      #map {
-        height: 100%;
-      }
-      /* Optional: Makes the sample page fill the window. */
-      html, body {
-        height: 93%;
-        margin: 0;
-        padding: 0;
-      }
+        #map {
+            height: 100%;
+        }
+        /* Optional: Makes the sample page fill the window. */
+        html, body {
+            height: 93%;
+            margin: 0;
+            padding: 0;
+        }
     </style>
+    <link rel="stylesheet" href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
 
 </head>
 
+
+
 <body>
-    
-    <!-- NAVIGATION BAR -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+
+    <!-- NAVIGATION BAR: -->
+<!--     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="#"></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -56,203 +57,138 @@
                     <a class="nav-link" href="#list">List Results</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#detail">Detail</a>
+                    <a class="nav-link" href="#map">Map</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#about">About</a>
                 </li>
             </ul>
         </div>
-    </nav>
+    </nav> -->
 
     
-    <!-- CONTENT DIVS -->
+    
+      <!-- DRAWER: -->
+      <!-- notice the data-mdc-auto-init attribute;  this value is used by the autoinit script -->
+      <aside class="mdc-drawer mdc-drawer--modal" data-mdc-auto-init="MDCDrawer">
+      <div class="mdc-drawer__content">
+          <nav class="mdc-list">
+              <a class="mdc-list-item mdc-list-item--activated" href="#home" aria-selected="true">
+                <i class="material-icons mdc-list-item__graphic" aria-hidden="true">home</i>
+                <span class="mdc-list-item__text">Home</span>
+              </a>
+              <a class="mdc-list-item" href="#search">
+                <i class="material-icons mdc-list-item__graphic" aria-hidden="true">search</i>
+                <span class="mdc-list-item__text">Search</span>
+              </a>
+              <a class="mdc-list-item" href="#list">
+                <i class="material-icons mdc-list-item__graphic" aria-hidden="true">list</i>
+                <span class="mdc-list-item__text">List Results</span>
+              </a>
+              <a class="mdc-list-item" href="#map">
+                <i class="material-icons mdc-list-item__graphic" aria-hidden="true">map</i>
+                <span class="mdc-list-item__text">Map Results</span>
+              </a>
+              <a class="mdc-list-item" href="#about">
+                <i class="material-icons mdc-list-item__graphic" aria-hidden="true">info</i>
+                <span class="mdc-list-item__text">About</span>
+              </a>
+          </nav>
+      </div>
+    </aside>
+
+    <!-- necessary for modal drawer -->
+    <div class="mdc-drawer-scrim"></div>
+    
+    
+    <!-- TOP APP BAR: -->
+    <header class="mdc-top-app-bar">
+      <div class="mdc-top-app-bar__row">
+        <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
+          <a href="#" class="material-icons mdc-top-app-bar__navigation-icon">menu</a>
+          <span class="mdc-top-app-bar__title">Airports around the world</span>
+        </section>
+      </div>
+    </header>
+    <div class="mdc-top-app-bar--fixed-adjust"></div>
+    
+
+    
+    <!-- CONTENT ON EACH SCREEN: -->
     <!-- Home -->
-    <div class="content" id="home">
-      <h1>Home content</h1>
-    </div>
+
 
     <!-- Search -->
-    <div class="content" id="search"  bgcolor="#000000">
-            <h5>Search by airport:</h5>
-            <input id="airportInput" type="text" placeholder="Enter Airport Name">
-            <button id="airportButton">GO</button>
-            <h5>Search by city for a list of airports (?):</h5>
-            <input id="cityInput" type="text" placeholder="Enter City(?)">
-            <button id="cityButton">GO</button>
-        <div id="map"></div>
+    <div class="content" id="search" bgcolor="#000000">
+        <h5>Search for airports:</h5>
+
+         
+        <!-- Text Field -->
+        <div class="mdc-text-field" data-mdc-auto-init="MDCTextField">
+          <input class="mdc-text-field__input" type="text" id="input">
+          <label for="input" class="mdc-floating-label">Enter Airport or City</label>
+          <div class="mdc-line-ripple"></div>
+        </div>
+
+        <button id="airportButton" class="mdc-button mdc-button--raised" id="btnSay">
+          Go
+        </button>
+        
+        <!-- conent message: -->        
+        <p style="color: orange" class="contentMessage"></p>
+        
+        <!-- list items: -->
+        <ul id=listItems class="mdc-list mdc-list--two-line"></ul> 
+
+
     </div>
-    
+
     <!-- List -->
     <div class="content" id="list">
         <h1>List content</h1>
     </div>
-  
-    <!-- Detail -->
-    <div class="content" id="detail">
-        <h1>Detail content</h1>
+
+    <!-- Map -->
+    <div class="content" id="map">
+        <h1>Map content</h1>
+        <div id="map"></div>
     </div>
-    
+
     <!-- About -->
     <div class="content" id="about">
-        <h1>About content</h1>    
+        <h1>About content</h1> 
     </div>
 
 
     <!-- SCRIPTS -->
+    
+    <!-- google components:  -->
+    <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+
+    <!-- jquerry: -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<!--**-->    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
-    <script> //src=NAME OF FILE!!! </script>
-    <!-- map key: -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
-    
-<!--**-->    <!--From card example: -->
-<!--**-->    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-<!--**-->    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-<!--**-->    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-    <meta charset="UTF-8">
-    
-    <!-- MAP KEY -->
+
+
+    <script>   
+    var map;
+
+    function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+            center: {
+                lat: 0, lng: 0
+            },
+            zoom: 2 //see the whole earth
+        });
+    }
+    </script> 
+        
+    <!-- map key: -->
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDDopgA8RxvE9G6G8m7J-9g_MFUkag9tFk&callback=initMap" async defer></script>
 
-    
-    <script> //Main script
-        var endpoint = "https://script.google.com/macros/s/AKfycbyqZu5iwgp2C0Sk35PbTkJ1U3-lAfJej1TncdLxMAxaRmWdTg/exec";
-        
-        //MAP INIT
-        var map;
-        function initMap() {
-            map = new google.maps.Map(document.getElementById('map'), {
-              center: {lat: 41.8781, lng: -87.6298},   //chicago downtown centered
-              zoom: 10                                 //enough to see the whole of Chicago
-            });
-        }
+    <!-- Main script: -->
+    <script type="text/javascript" src="script.js"></script>
 
-//         function deleteMarkers(){
-//           markerArray.forEach(function(m){ //remove each marker from map and delete it.
-//                m.setMap(null);    //remove
-//                m=null;            //delete
-//           });
-//           markerArray = []; //reset
-//         }
-
-//         var markerArray = [];
-        
-        
-        //BUILD URL QUERY FROM USER INPUT:
-
-//         function getUrlQuery() {} //check project 2
-
-        
-        $(document).ready(function() {
-            //show home page:
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            $("#search").show();
-            
-            //NAVIGATE THROUGH SCREENS:
-            function hideScreens() {
-                $(".content").hide();
-            }
-            $(".nav-link").on("click", function() {
-                hideScreens();
-                var target = $(this).attr("href");
-                $(target).show();
-            });
-            
-            //CLICK THE GO BUTTON:
-            $("#airportButton").on("click", function(e) {
-                console.log("clicked airport button");
-                
-                //1)POSSIBLY CLEAR PREVIOUS RESULTS
-                
-                //QUERY AND USE DATA:
-                $.get(endpoint, function(responses) { //get url
-                    console.log(responses);
-                    
-//                     if (responses.length == 0)   $(".contentMessage").text("No such airport. Please change."); //if no results: show "no results" message
-//                     else                         $(".contentMessage").text("Targeted " + responses.length + " results");
-                    
-                    //FOR EACH JSON ELEMENT, (1) HIGHLIGH MARKER ON MAP (2) GET DATA ONTO INFO WINDOW (3):DISPLAY DETAILS ON DETAILS SCREEN (inner button clicked?)
-                    $.each(responses, function(i, v) {
-                        if (v[1].localeCompare("large_airport")){
-                            console.log(i + ": " + v);
-                        }
-                        
-                        
-//                         //(1)BUILD CARD COMPONENTS:
-//                         var div1 = $("<div>").addClass("col-sm");
-//                         var div2 = $("<div>").addClass("card");
-//                         var div3 = $("<div>").addClass("card-body");
-       
-//                         var h4 = $("<h4>").addClass("card-movie-name").text(v.title);
-//                         var h6 = $("<h6>").addClass("card-park-name").text(v.park);
-//                         var p1 = $("<p>").addClass("card-movie-date");
-                        
-//                         //parse date:
-//                         var date = v.date.split('-'); 
-//                         var date2 = date[2].split('T');
-//                         var displayDate = v.day + ", " + date[1] + "/" + date2[0] + "/" + date[0]
-//                         p1.text("Date: " + displayDate); //set date
-                        
-//                         var p2 = $("<p>").addClass("card-movie-rating").text("Rating: " + v.rating); //set rating
-//                         var p3 = $("<p>").addClass("card-movie-cc");                                 //set cc
-//                         v.cc == "Y" ? p3.text("Closed-Captioned") : p3.text("Not closed-captioned");
-                        
-//                         //APPEND CONTENT TO CARD DIVS, AND DIVS TO SCREEN:
-//                         $(div3).append(h4).append(h6).append(p1).append(p2).append(p3); //append all to the inner div
-//                         $(div2).append(div3);
-//                         $(div1).append(div2);
-//                         $("#list").append(div1).append("<br class=col-sm>");
-                        
-//                         //(2) PUT MARKER ON MAP:
-//                         var airportLocation = {lat: parseFloat(v.location.latitude), lng: parseFloat(v.location.longitude)};
-
-                        
-//                         var contentString = 
-//                           '<div id="content">'+
-                            
-//                           '<div id="movieInfo">'+  
-//                           '<h3 id="firstHeading" class="firstHeading"><u>Movie:</u> ' + v.title + '</h3>'+
-//                           '<p>Date: ' + displayDate + '</p>'+ 
-//                           '<p>Rating: ' + v.rating + '</p>'+ 
-//                           '<p>Closed Captioned: ' + cc + '</p>'+ 
-//                           '</div>'+
-                            
-//                           '<div id="parkInfo">'+
-//                           '<h5>' + v.park + '</h5>'+
-//                           '<p>Park address: ' + v.park_address + '</p>'+
-//                           '<p>Park phone: ' + v.park_phone + '</p>'+
-//                           '</div>'+
-                            
-//                           '</div>';    //end contentString
-                        
-//                         //create info window
-//                         var infowindow = new google.maps.InfoWindow({
-//                           content: contentString
-//                         });
-                        
-//                         //create marker
-//                         var marker = new google.maps.Marker({
-//                             position: airportLocation, map: map
-//                         });
-//                         markerArray.push(marker);
-                        
-                        
-//                         //open info window on marker click
-//                         marker.addListener('click', function() {
-//                           infowindow.open(map, marker);
-//                         });
-                        
-                        
-                   }); //end each
-                    
-                }); //end get
-                
-            }); //end on click
-            
-        }); //end doc-ready
-        
-    </script>
 
 
 </body>

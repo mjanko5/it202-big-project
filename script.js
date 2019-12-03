@@ -1,10 +1,7 @@
-var endpoint = "https://script.google.com/macros/s/AKfycbyqZu5iwgp2C0Sk35PbTkJ1U3-lAfJej1TncdLxMAxaRmWdTg/exec";
+var airportsEndpoint = "https://script.google.com/macros/s/AKfycbyqZu5iwgp2C0Sk35PbTkJ1U3-lAfJej1TncdLxMAxaRmWdTg/exec";
+var weatherEndpoint1 = "https://api.openweathermap.org/data/2.5/weather?q="; //part 1
+var weatherEndpoint2 = "&APPID=6ca9f07af4e6201093a5d4f1dfd864f1"             //part 2
 var markerArray = [];
-
-// function deleteMarkers(){} // (p2)
-
-// function getUrlQuery() {}  // (p2)
-
 
 
 $(document).ready(function() {
@@ -15,7 +12,7 @@ $(document).ready(function() {
     var drawer = $("aside")[0].MDCDrawer;
 
 
-    // when menu icon is click, toggle drawer open property
+    // when menu icon is clicked, toggle drawer open property
     $(".mdc-top-app-bar__navigation-icon").on("click", function(){
         drawer.open = !drawer.open;
     });
@@ -23,14 +20,16 @@ $(document).ready(function() {
     //NAVIGATE THROUGH SCREENS:
     function hideScreens() {
         $(".content").hide();
-        drawer.open = !drawer.open; //close
     }
     $(".mdc-list-item").on("click", function() {
         
         hideScreens();
+        drawer.open = !drawer.open; //close
         var target = $(this).attr("href");
         $(target).show();
     });
+    
+ 
     
     //show home page:
     window.scrollTo({
@@ -41,35 +40,52 @@ $(document).ready(function() {
     $("#search").show();
     
     
+    
+    
+    
+    
     //CLICK THE GO BUTTON:
     $("#airportButton").on("click", function(e) {
-        console.log("clicked airport button");
-        //1)POSSIBLY CLEAR PREVIOUS RESULTS (p2)
         
-        //QUERY AND USE DATA:
-        $.get(endpoint, function(responses) { //get url
+        console.log("clicked airport button");
+        
+        //CLEAR PREVIOUS RESULTS
+        
+        function deleteMarkers(){
+          markerArray.forEach(function(m){ //remove each marker from map and delete it.
+               m.setMap(null);    //remove
+               m=null;            //delete
+          });
+          markerArray = []; //reset
+        }
+        
+        deleteMarkers();       //remove previous markers from map
+        $(".contentMessage").hide();             //hide message
+        $(".mdc-list-item.airport-item").remove(); //clear any previous list entries                
+        $(".mdc-card.demo-card").remove();         //clear any previous cards
+        
+        
 
-            
-            //console.log(responses);
+        
+        
+        //GET AND USE DATA:
+        $.get(airportsEndpoint, function(responses) { //get url
+
             var input = $("#input").val();
-
-            //NO MATCHED DATA MESSAGE (p2)
-                       
-            
-            //FOR EACH JSON ELEMENT, (1) HIGHLIGH MARKER ON MAP (2) GET DATA ONTO INFO WINDOW (3):DISPLAY DETAILS ON DETAILS SCREEN (inner button clicked?)
-            
-            
             function checkAirportName(response) { //filter results:
-                return ((input == response[0]  //ident
-                     || input == response[2]  //airport name
-                     || input == response[7]  //municipality
-                     || input == response[8]  //gps code
-                     || input == response[9]  //iata code
-                     || input == response[10]) //local code
-                     && input != '');
+                return ((input.toLowerCase() === response[0].toLowerCase()  //ident
+                    || input.toLowerCase() === response[2].toLowerCase()  //airport name
+                    || input.toLowerCase() === response[7].toLowerCase()  //municipality
+                    || input.toLowerCase() === response[8].toLowerCase()  //gps code
+                    || input.toLowerCase() === response[9].toLowerCase()  //iata code
+                    || input.toLowerCase() === response[10].toLowerCase()) //local code
+                    && input != '');
             }
             
-            responses = responses.filter(checkAirportName); //filter out only the airports that match the name in input field.
+            //filter out only the airports that match the name in input field:
+            responses = responses.filter(checkAirportName);
+            var storedResponses = responses; //store
+            
             
             //display results message:
             var length = responses.length;
@@ -77,9 +93,22 @@ $(document).ready(function() {
             else if (length == 1)  $(".contentMessage").text("Found 1 result");
             else                   $(".contentMessage").text("Found " + length + " results");
             
+            $(".contentMessage").show();             //reshow message
+            
+            //FOR EACH JSON ELEMENT, (1) HIGHLIGH MARKER ON MAP (2) GET DATA ONTO INFO WINDOW (3):DISPLAY DETAILS ON DETAILS SCREEN (inner button clicked?)
             
             //FOR EACH RESPONSE:
             $.each(responses, function(i, v) {
+                
+                
+                //trying weather data:
+                weatherEndpoint = weatherEndpoint1 + v[7] + "," + v[5] + weatherEndpoint2;
+                $.get(weatherEndpoint, function(e){
+                    console.log(e);
+                });
+                
+                
+                
 
                 //PUT MARKER ON MAP:
                 
@@ -111,30 +140,42 @@ $(document).ready(function() {
                 
                 //BUILD CARD COMPONENTS:
                 
-                var listItem = [
-                    '<li class="mdc-list-item" tabindex="0">',
-                    '<span class="mdc-list-item__text">',
-                      '<span class="mdc-list-item__primary-text">' + v[2] + ' (' + v[9] + ')' + '</span>',
-                      '<span class="mdc-list-item__secondary-text">' + v[7] + ', ' + v[5] + '</span>',
-                    '</span>',
+                var listItem = [                                                      //create your own attribute and prefix it with data.
+                    '<li class="mdc-list-item airport-item" href="#list" tabindex="0" data-code=' + v[0] + '>',  //v[0] -> airport code
+
+                      '<span class="mdc-list-item__text">',
+                        '<span class="mdc-list-item__primary-text">' + v[2] + ' (' + v[9] + ')' + '</span>',
+                        '<span class="mdc-list-item__secondary-text">' + v[7] + ', ' + v[5] + '</span>',
+                      '</span>',
                     '</li>',
                 ].join("\n"); //join on newline
                 
                 $("#listItems").append(listItem); //apend
                 
+            }); //end each
+            
+
+            
+           
+            //build card html:
+            
+            function buildCard(code){
                 
+                //loop through filtered results to target this code, now you have resulting airport
+                var target;
+                for (const response of storedResponses) {
+                    if(response[0] === code) target = response;
+                }
                 
-                
-                //build card html:
                 var card = [
                 '<div class="mdc-card demo-card">',
                     '<div class="mdc-card__primary-action demo-card__primary-action" tabindex="0">',
                         '<div class="mdc-card__media mdc-card__media--16-9 demo-card__media" style="background-image: url(&quot;https://material-components.github.io/material-components-web-catalog/static/media/photos/3x2/2.jpg&quot;);"></div>',
                         '<div class="demo-card__primary">',
-                            '<h2 class="demo-card__title mdc-typography mdc-typography--headline6">Our Changing Planet</h2>',
-                            '<h3 class="demo-card__subtitle mdc-typography mdc-typography--subtitle2">by Kurt Wagner</h3>',
+                            '<h2 class="demo-card__title mdc-typography mdc-typography--headline6">' + target[2] + ' (' + target[9] + ')' + '</h2>',
+                            '<h3 class="demo-card__subtitle mdc-typography mdc-typography--subtitle2">' + target[1] + ' in ' + target[7] + ', ' + target[5] + '</h3>',
                         '</div>',
-                        '<div class="demo-card__secondary mdc-typography mdc-typography--body2">Visit ten places on our planet that are undergoing the biggest changes today.</div>',
+                        '<div class="demo-card__secondary mdc-typography mdc-typography--body2">Elevation: ' + target[3] + '</div>',
                     '</div>',
                     '<div class="mdc-card__actions">',
                         '<div class="mdc-card__action-buttons">',
@@ -152,15 +193,31 @@ $(document).ready(function() {
                     '</div>',
                 '</div>'
                 ].join("\n"); //join on newline
-                
-                $("#search").append(card); //apend
 
+            $("#list").append(card); //append to list
+
+            } 
+
+            
+            //CLICK EVENT ON AIRPORT ITEM:
+            
+            $(".mdc-list-item.airport-item").on("click", function() {
                 
+                $(".mdc-card.demo-card").remove(); //clear any previous cards
                 
-                
-                
-            }); //end each
+                buildCard($(this).attr("data-code")); //build card. pass in the airport code.
+                hideScreens();
+                var target = $(this).attr("href");
+                $(target).show();
+            });   
             
         }); //end get
-    }); //end on click
+        
+        
+
+        
+        
+        
+    }); //end go button on-click
+    
 }); //end doc-ready

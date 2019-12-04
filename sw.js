@@ -1,4 +1,6 @@
-	var cacheName = 'app-v1';
+//based off of "Say It!" app sw:
+
+var cacheName = 'app-v1';
 	var appShellFiles = [
         "./index.html",
         "./script.js"

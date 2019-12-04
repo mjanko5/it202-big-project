@@ -101,11 +101,7 @@ $(document).ready(function() {
             $.each(responses, function(i, v) {
                 
                 
-                //trying weather data:
-                weatherEndpoint = weatherEndpoint1 + v[7] + "," + v[5] + weatherEndpoint2;
-                $.get(weatherEndpoint, function(e){
-                    console.log(e);
-                });
+
                 
                 
                 
@@ -163,9 +159,23 @@ $(document).ready(function() {
                 
                 //loop through filtered results to target this code, now you have resulting airport
                 var target;
-                for (const response of storedResponses) {
-                    if(response[0] === code) target = response;
+                for (const storedResponse of storedResponses) {
+                    if(storedResponse[0] === code) target = storedResponse;
                 }
+                
+                
+                //trying weather data:
+                weatherEndpoint = weatherEndpoint1 + target[7] + "," + target[5] + weatherEndpoint2;
+                var temperature;
+                var description;
+                $.get(weatherEndpoint, function(weatherResponse){
+                    var farenheit = weatherResponse.main.temp * 9 / 5 - 459.67;   //Kelvin to Farenheit
+                    temperature = Math.round(farenheit) + " °F";
+                    console.log(temperature);
+                    
+                    description = weatherResponse.weather[0].description;
+                    console.log(description);
+                });
                 
                 var card = [
                 '<div class="mdc-card demo-card">',
@@ -175,11 +185,12 @@ $(document).ready(function() {
                             '<h2 class="demo-card__title mdc-typography mdc-typography--headline6">' + target[2] + ' (' + target[9] + ')' + '</h2>',
                             '<h3 class="demo-card__subtitle mdc-typography mdc-typography--subtitle2">' + target[1] + ' in ' + target[7] + ', ' + target[5] + '</h3>',
                         '</div>',
-                        '<div class="demo-card__secondary mdc-typography mdc-typography--body2">Elevation: ' + target[3] + '</div>',
+                        '<div class="demo-card__secondary mdc-typography mdc-typography--body2">' + temperature + '  ' + description + '</div>',
+                        '<div class="demo-card__secondary mdc-typography mdc-typography--body2">Elevation: ' + target[3] + ' ft</div>',
                     '</div>',
                     '<div class="mdc-card__actions">',
                         '<div class="mdc-card__action-buttons">',
-                            '<button class="mdc-button mdc-card__action mdc-card__action--button"> <span class="mdc-button__ripple"></span> Read</button>',
+                            '<button class="mdc-button mdc-card__action mdc-card__action--button" id="goToMapButton"> <span class="mdc-button__ripple"></span> Map</button>',
                             '<button class="mdc-button mdc-card__action mdc-card__action--button"> <span class="mdc-button__ripple"></span> Bookmark</button>',
                         '</div>',
                         '<div class="mdc-card__action-icons">',
@@ -206,9 +217,17 @@ $(document).ready(function() {
                 $(".mdc-card.demo-card").remove(); //clear any previous cards
                 
                 buildCard($(this).attr("data-code")); //build card. pass in the airport code.
+
                 hideScreens();
                 var target = $(this).attr("href");
                 $(target).show();
+                
+                
+                //map button event:
+                $("#goToMapButton").on("click", function() {
+                    hideScreens();
+                    $("#map").show();
+                });
             });   
             
         }); //end get

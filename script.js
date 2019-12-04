@@ -221,3 +221,16 @@ $(document).ready(function() {
     }); //end go button on-click
     
 }); //end doc-ready
+
+
+
+
+
+// window.onload = () => {
+//   'use strict';
+
+//   if ('serviceWorker' in navigator) {
+//     navigator.serviceWorker
+//              .register('./sw.js');
+//   }
+// }

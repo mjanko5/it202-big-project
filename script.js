@@ -111,15 +111,22 @@ $(document).ready(function() {
                 var coordinates = v[11].split(', ');
                 var pinLocation = {lat: parseFloat(coordinates[1]), lng: parseFloat(coordinates[0])};
 
+                
+
+                
                 //create marker
                 var marker = new google.maps.Marker({
-                    position: pinLocation, map: map
+                    position: pinLocation, 
+                    map: map
                 });
+
+                map.setCenter(pinLocation);
+//                 map.setZoom(2);
                 markerArray.push(marker);
 
                 var contentString = 
                   '<div id="contentString">'+
-                  '<p>Airport: ' + v[2] + '</p>' +                            
+                  '<p>' + v[2] + '</p>' +                            
                   '</div>';    //end contentString
 
                 //create info window
@@ -171,12 +178,12 @@ $(document).ready(function() {
                 $.get(weatherEndpoint, function(weatherResponse){
                     var farenheit = weatherResponse.main.temp * 9 / 5 - 459.67;   //Kelvin to Farenheit
                     temperature = Math.round(farenheit) + " °F";
-                    console.log(temperature);
                     
                     description = weatherResponse.weather[0].description;
-                    console.log(description);
+                    $("#weatherLine").text(temperature + '     ' + description);
                 });
                 
+                console.log("before card");
                 var card = [
                 '<div class="mdc-card demo-card">',
                     '<div class="mdc-card__primary-action demo-card__primary-action" tabindex="0">',
@@ -185,7 +192,7 @@ $(document).ready(function() {
                             '<h2 class="demo-card__title mdc-typography mdc-typography--headline6">' + target[2] + ' (' + target[9] + ')' + '</h2>',
                             '<h3 class="demo-card__subtitle mdc-typography mdc-typography--subtitle2">' + target[1] + ' in ' + target[7] + ', ' + target[5] + '</h3>',
                         '</div>',
-                        '<div class="demo-card__secondary mdc-typography mdc-typography--body2">' + temperature + '  ' + description + '</div>',
+                        '<div id="weatherLine" class="demo-card__secondary mdc-typography mdc-typography--body2"></div>',
                         '<div class="demo-card__secondary mdc-typography mdc-typography--body2">Elevation: ' + target[3] + ' ft</div>',
                     '</div>',
                     '<div class="mdc-card__actions">',
@@ -225,6 +232,7 @@ $(document).ready(function() {
                 
                 //map button event:
                 $("#goToMapButton").on("click", function() {
+                    map.setZoom(10);
                     hideScreens();
                     $("#map").show();
                 });

@@ -8,3 +8,9 @@
     height: 30px;
     width: 50px;
 }
+
+p.mdc-typography--body1
+{
+    color:navy;
+/*     font-weight:bold; */
+}

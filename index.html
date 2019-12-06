@@ -33,45 +33,15 @@
         }
     </style>
     <link rel="stylesheet" href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
-      rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
 
 </head>
 
 
 
 <body>
-
-    <!-- NAVIGATION BAR: -->
-<!--     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#"></a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="#home">Home<span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#search">Search</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#list">List Results</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#map">Map</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#about">About</a>
-                </li>
-            </ul>
-        </div>
-    </nav> -->
-
-    
-    
+   
       <!-- DRAWER: -->
       <!-- notice the data-mdc-auto-init attribute;  this value is used by the autoinit script -->
       <aside class="mdc-drawer mdc-drawer--modal" data-mdc-auto-init="MDCDrawer">
@@ -109,8 +79,8 @@
     <header class="mdc-top-app-bar">
       <div class="mdc-top-app-bar__row">
         <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
-          <a href="#" class="material-icons mdc-top-app-bar__navigation-icon">menu</a>
-          <!-- <button type="button"  id="menu-nav-btn" class="material-icons mdc-top-app-bar__navigation-icon"></button> -->
+          <button class="material-icons mdc-top-app-bar__navigation-icon mdc-icon-button">menu</button>
+     <!-- <button type="button"  id="menu-nav-btn" class="material-icons mdc-top-app-bar__navigation-icon"></button> -->
           <span class="mdc-top-app-bar__title">Airport Atmosphere</span>
         </section>
       </div>
@@ -121,12 +91,13 @@
     
     <!-- CONTENT ON EACH SCREEN: -->
     <!-- Home -->
+<!--     <h1>Welcome to Airport Atmosphere</h1>
+    <p>button goes here</p> -->
 
 
     <!-- Search -->
     <div class="content" id="search" bgcolor="#000000">
-        <h5>Search for airports:</h5>
-
+        <p class="mdc-typography--body1">Search for airports:</p>
          
         <!-- Text Field -->
         <div class="mdc-text-field" data-mdc-auto-init="MDCTextField">
@@ -144,8 +115,6 @@
         
         <!-- list items: -->
         <ul id=listItems class="mdc-list mdc-list--two-line"></ul> 
-
-
     </div>
 
     <!-- List -->
@@ -154,13 +123,12 @@
 
     <!-- Map -->
     <div class="content" id="map">
-        <h1>Map content</h1>
         <div id="map"></div>
     </div>
 
     <!-- About -->
     <div class="content" id="about">
-        <h1>About content</h1> 
+        <h1>About</h1> 
     </div>
 
 
@@ -182,7 +150,7 @@
             center: {
                 lat: 0, lng: 0
             },
-            zoom: 2 //see the whole earth
+            zoom: 10
         });
     }
     </script> 
@@ -196,7 +164,7 @@
 
 
 	<!-- REGISTER SERVICE WORKER. RETURNS A PROMISE AFTER SUCCESSFUL REGISTRATION.-->
-    <script>
+<!--     <script>
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('./sw.js')
         .then(function(reg) {
@@ -207,7 +175,7 @@
           console.log('Registration failed with ' + error);
         });
       }
-    </script>
+    </script> -->
 
 </body>
 

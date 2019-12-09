@@ -4,7 +4,43 @@ var weatherEndpoint2 = "&APPID=6ca9f07af4e6201093a5d4f1dfd864f1"             //p
 var markerArray = [];
 
 
+
+
+
+//CREATE AN INDEXED DB:
+
+const db = new Dexie('HistoryDatabase');    
+console.log(db);
+
+// Declare tables, IDs and indexes
+db.version(1).stores({
+    items: '++id, heading, subheading'
+});
+
+//Populate db on run
+$("#historyItems").empty();
+db.items.each(item => buildHistoryItem(item.heading, item.subheading));
+
+
+
+function buildHistoryItem(search_query, date){
+    var historyItem = [
+        '<li class="mdc-list-item history-item" href="#" tabindex="0">',
+          '<span class="mdc-list-item__text">',
+            '<span class="mdc-list-item__primary-text">' + search_query + '</span>',
+            '<span class="mdc-list-item__secondary-text">' + date + '</span>',
+          '</span>',
+        '</li>',
+        ].join("\n"); //join on newline
+
+    $("#historyItems").append(historyItem);             
+}
+
+
+
+
 $(document).ready(function() {
+    
     
     window.mdc.autoInit(); //google material
      
@@ -38,8 +74,6 @@ $(document).ready(function() {
     });
     
     $("#search").show();
-    
-    
     
     
     
@@ -118,10 +152,11 @@ $(document).ready(function() {
                 var marker = new google.maps.Marker({
                     position: pinLocation, 
                     map: map
+                 //   title: hh
                 });
 
                 map.setCenter(pinLocation);
-//                 map.setZoom(2);
+                map.setZoom(10);
                 markerArray.push(marker);
 
                 var contentString = 
@@ -171,17 +206,21 @@ $(document).ready(function() {
                 }
                 
                 
-                //trying weather data:
+                //weather data:
                 weatherEndpoint = weatherEndpoint1 + target[7] + "," + target[5] + weatherEndpoint2;
                 var temperature;
                 var description;
                 $.get(weatherEndpoint, function(weatherResponse){
                     var farenheit = weatherResponse.main.temp * 9 / 5 - 459.67;   //Kelvin to Farenheit
-                    temperature = Math.round(farenheit) + " °F";
+                    temperature = Math.round(farenheit) + "°F";
                     
                     description = weatherResponse.weather[0].description;
-                    $("#weatherLine").text(temperature + '     ' + description);
+                    $("#weatherLine").text(description + " · " + temperature);
                 });
+                
+                //time:
+                var date = new Date;
+                var time = date.toString().split(' ')[4].substring(0,5); //get time from date
                 
                 console.log("before card");
                 var card = [
@@ -192,8 +231,9 @@ $(document).ready(function() {
                             '<h2 class="demo-card__title mdc-typography mdc-typography--headline6">' + target[2] + ' (' + target[9] + ')' + '</h2>',
                             '<h3 class="demo-card__subtitle mdc-typography mdc-typography--subtitle2">' + target[1] + ' in ' + target[7] + ', ' + target[5] + '</h3>',
                         '</div>',
-                        '<div id="weatherLine" class="demo-card__secondary mdc-typography mdc-typography--body2"></div>',
                         '<div class="demo-card__secondary mdc-typography mdc-typography--body2">Elevation: ' + target[3] + ' ft</div>',
+                        '<div id="weatherLine" class="demo-card__secondary mdc-typography mdc-typography--body2"></div>',
+                        '<div id="weatherLine" class="demo-card__secondary mdc-typography mdc-typography--body2">' + time + ' CT</div>',
                     '</div>',
                     '<div class="mdc-card__actions">',
                         '<div class="mdc-card__action-buttons">',
@@ -232,7 +272,6 @@ $(document).ready(function() {
                 
                 //map button event:
                 $("#goToMapButton").on("click", function() {
-                    map.setZoom(10);
                     hideScreens();
                     $("#map").show();
                 });
@@ -243,9 +282,22 @@ $(document).ready(function() {
         
 
         
+        //ADD TO INDEXED DB:  
+        var search_query = $("#input").val();
+        var date = new Date();
+        
+        db.items.add({
+            heading: search_query,
+            subheading: date
+        }).then(buildHistoryItem(search_query, date));
+        
         
         
     }); //end go button on-click
+    
+    
+
+    
     
 }); //end doc-ready
 

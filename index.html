@@ -63,6 +63,10 @@
                 <i class="material-icons mdc-list-item__graphic" aria-hidden="true">map</i>
                 <span class="mdc-list-item__text">Map Results</span>
               </a>
+              <a class="mdc-list-item" href="#history">
+                <i class="material-icons mdc-list-item__graphic" aria-hidden="true">history</i>
+                <span class="mdc-list-item__text">History</span>
+              </a>
               <a class="mdc-list-item" href="#about">
                 <i class="material-icons mdc-list-item__graphic" aria-hidden="true">info</i>
                 <span class="mdc-list-item__text">About</span>
@@ -125,6 +129,13 @@
     <div class="content" id="map">
         <div id="map"></div>
     </div>
+    
+    <!-- History -->
+    <div class="content" id="history">
+        <p class="mdc-typography--body1">Search history</p>
+        <!-- history items: -->
+        <ul id=historyItems class="mdc-list mdc-list--two-line"></ul> 
+    </div>    
 
     <!-- About -->
     <div class="content" id="about">
@@ -137,7 +148,7 @@
     <!-- google components:  -->
     <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
 
-    <!-- jquerry: -->
+    <!-- jquery: -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 
@@ -148,15 +159,18 @@
     function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
             center: {
-                lat: 0, lng: 0
+                lat: 30, lng: 0
             },
-            zoom: 10
+            zoom: 2
         });
     }
     </script> 
         
     <!-- map key: -->
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDDopgA8RxvE9G6G8m7J-9g_MFUkag9tFk&callback=initMap" async defer></script>
+    
+    <!-- dexie: -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dexie/2.0.4/dexie.min.js"></script>
 
     <!-- Main script: -->
     <script type="text/javascript" src="script.js"></script>

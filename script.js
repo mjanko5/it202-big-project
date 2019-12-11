@@ -1,3 +1,5 @@
+//To God be the Glory
+
 //ENDPOINTS:
 
 var airportsEndpoint = "https://script.google.com/macros/s/AKfycbyqZu5iwgp2C0Sk35PbTkJ1U3-lAfJej1TncdLxMAxaRmWdTg/exec";
@@ -206,6 +208,18 @@ $(document).ready(function() {
                     hideScreens();
                     $("#map").show(); //switch to map
                 });
+                
+                //CLICK EMERGENCY BUTTON ON CARD:
+                var soundOn = -1;
+                var audio = new Audio('emergency_horn.wav');
+                
+                $("#emergencyButton").on("click", function() {
+                    soundOn *= -1;           //toggle on/off                    
+                    if (soundOn === 1)       audio.play();
+                    else                     audio.pause();
+                });               
+                
+                
             });  
             
             
@@ -251,8 +265,8 @@ $(document).ready(function() {
                     '</div>',
                     '<div class="mdc-card__actions">',
                         '<div class="mdc-card__action-buttons">',
-                            '<button class="mdc-button mdc-card__action mdc-card__action--button" id="goToMapButton"> <span class="mdc-button__ripple"></span> Map</button>',
-                            '<button class="mdc-button mdc-card__action mdc-card__action--button"> <span class="mdc-button__ripple"></span> Bookmark</button>',
+                            '<button class="mdc-button mdc-card__action mdc-card__action--button" id="goToMapButton"> <span class="mdc-button__ripple"></span>Map</button>',
+                            '<button class="mdc-button mdc-card__action mdc-card__action--button" id="emergencyButton"> <span class="mdc-button__ripple"></span>Hear Airport Alarm</button>',
                         '</div>',
                         '<div class="mdc-card__action-icons">',
                             '<button class="mdc-icon-button mdc-card__action mdc-card__action--icon--unbounded" aria-pressed="false" aria-label="Add to favorites" title="Add to favorites">',

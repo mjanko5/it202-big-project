@@ -69,7 +69,7 @@
                   </a>
                   <a class="mdc-list-item" href="#history">
                     <i class="material-icons mdc-list-item__graphic" aria-hidden="true">history</i>
-                    <span class="mdc-list-item__text">History</span>
+                    <span class="mdc-list-item__text">Search History</span>
                   </a>
                   <a class="mdc-list-item" href="#about">
                     <i class="material-icons mdc-list-item__graphic" aria-hidden="true">info</i>
@@ -105,6 +105,7 @@
 
         <!-- Search -->
         <div class="content" id="search" bgcolor="#000000">
+            <img src="airports.png" alt="airport picture" style="width:380px;height:148px;">
             <p class="mdc-typography--body1">Search for airports:</p>
 
             <!-- Text Field -->
@@ -118,7 +119,8 @@
             <button id="airportButton" class="mdc-button mdc-button--raised" id="btnSay">
               Go
             </button>
-
+            
+            
             <!-- conent message -->        
             <p style="color: orange" class="contentMessage"></p>
 
@@ -131,20 +133,44 @@
         </div>
 
         <!-- Map -->
-        <div class="content" id="map">
+        <div class="content" id="map">            
             <div id="map"></div>
         </div>
 
         <!-- History -->
         <div class="content" id="history">
-            <p class="mdc-typography--body1">Search history</p>
+            <h5 class="mdc-typography--headline5">Search History</h5> 
             <!-- history items: -->
             <ul id=historyItems class="mdc-list mdc-list--two-line"></ul> 
         </div>    
 
         <!-- About -->
         <div class="content" id="about">
-            <h1>About</h1> 
+            <h5 class="mdc-typography--headline5">About</h5> 
+            <h6 class="mdc-typography--headline6">Airport Atmosphere</h6> 
+            <p class="mdc-typography--body1">
+                This open-ended app can be used by pilots, tourists, and all other airporteers!
+                Search for a city, MAJOR airport, or airport code.
+                <br><br>
+                The result is a list of airports.
+                Clicking an item from the list produces a detail page with info such as weather, details, and a map!
+                Enjoy exploring!
+                <br><br>
+                <strong>
+                Some technical info:
+                </strong>
+                <br><br>
+                Endpoints used: Airports Database and Open Weather Map API.
+                <br>
+                NOTE: Airport endpoint is from a Google Script at Matt's account. I hope there is no authentication problems reaching this endpoint.
+                <br><br>
+                As a hardware feature, I utilized the speaker of the device. Just hit "Hear Airport Alarm" and enjoy!!
+                <br><br>
+                There is also an Indexed DB, which can be seen under "Search History". Finally, there is a Service Worker and Manifest.
+                <br><br>
+                The card component has several icon buttons that are not yet implemented. Clicking them produces no result. The image is also a placeholder image.
+                New enhancements are underway. Stay tuned.
+            </p>
         </div>
 
 
@@ -183,7 +209,7 @@
 
 
         <!-- REGISTER SERVICE WORKER. RETURNS A PROMISE AFTER SUCCESSFUL REGISTRATION.-->
-    <!--     <script>
+        <script>
           if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('./sw.js')
             .then(function(reg) {
@@ -194,7 +220,7 @@
               console.log('Registration failed with ' + error);
             });
           }
-        </script> -->
+        </script>
 
     </body>
 

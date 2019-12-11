@@ -1,16 +1,14 @@
+//ENDPOINTS:
+
 var airportsEndpoint = "https://script.google.com/macros/s/AKfycbyqZu5iwgp2C0Sk35PbTkJ1U3-lAfJej1TncdLxMAxaRmWdTg/exec";
 var weatherEndpoint1 = "https://api.openweathermap.org/data/2.5/weather?q="; //part 1
 var weatherEndpoint2 = "&APPID=6ca9f07af4e6201093a5d4f1dfd864f1"             //part 2
 var markerArray = [];
 
 
-
-
-
 //CREATE AN INDEXED DB:
 
 const db = new Dexie('HistoryDatabase');    
-console.log(db);
 
 // Declare tables, IDs and indexes
 db.version(1).stores({
@@ -20,7 +18,6 @@ db.version(1).stores({
 //Populate db on run
 $("#historyItems").empty();
 db.items.each(item => buildHistoryItem(item.heading, item.subheading));
-
 
 
 function buildHistoryItem(search_query, date){
@@ -38,36 +35,38 @@ function buildHistoryItem(search_query, date){
 
 
 
+//DOCUMENT READY:
 
 $(document).ready(function() {
     
-    
-    window.mdc.autoInit(); //google material
+    //GOOGLE MATERIAL:
+
+    window.mdc.autoInit(); //google material init
      
     // creating a var reference just to save code later
     var drawer = $("aside")[0].MDCDrawer;
 
 
+    //NAVIGATE THROUGH SCREENS:
+    
     // when menu icon is clicked, toggle drawer open property
     $(".mdc-top-app-bar__navigation-icon").on("click", function(){
         drawer.open = !drawer.open;
     });
-    
-    //NAVIGATE THROUGH SCREENS:
-    function hideScreens() {
-        $(".content").hide();
-    }
+
+    //navigate through screens
     $(".mdc-list-item").on("click", function() {
-        
         hideScreens();
         drawer.open = !drawer.open; //close
         var target = $(this).attr("href");
         $(target).show();
     });
     
- 
+    function hideScreens() {
+        $(".content").hide();
+    }
     
-    //show home page:
+    //show starting page:
     window.scrollTo({
         top: 0,
         behavior: 'smooth'
@@ -79,11 +78,11 @@ $(document).ready(function() {
     
     
     //CLICK THE GO BUTTON:
+    
     $("#airportButton").on("click", function(e) {
         
-        console.log("clicked airport button");
         
-        //CLEAR PREVIOUS RESULTS
+        //CLEAR PREVIOUS RESULTS:
         
         function deleteMarkers(){
           markerArray.forEach(function(m){ //remove each marker from map and delete it.
@@ -94,89 +93,81 @@ $(document).ready(function() {
         }
         
         deleteMarkers();       //remove previous markers from map
-        $(".contentMessage").hide();             //hide message
+        $(".contentMessage").hide();               //hide message
         $(".mdc-list-item.airport-item").remove(); //clear any previous list entries                
         $(".mdc-card.demo-card").remove();         //clear any previous cards
-        
-        
-
         
         
         //GET AND USE DATA:
         $.get(airportsEndpoint, function(responses) { //get url
 
+            //filter function:
             var input = $("#input").val();
             function checkAirportName(response) { //filter results:
                 return ((input.toLowerCase() === response[0].toLowerCase()  //ident
-                    || input.toLowerCase() === response[2].toLowerCase()  //airport name
-                    || input.toLowerCase() === response[7].toLowerCase()  //municipality
-                    || input.toLowerCase() === response[8].toLowerCase()  //gps code
-                    || input.toLowerCase() === response[9].toLowerCase()  //iata code
-                    || input.toLowerCase() === response[10].toLowerCase()) //local code
-                    && input != '');
+                    ||   input.toLowerCase() === response[2].toLowerCase()  //airport name
+                    ||   input.toLowerCase() === response[7].toLowerCase()  //municipality
+                    ||   input.toLowerCase() === response[8].toLowerCase()  //gps code
+                    ||   input.toLowerCase() === response[9].toLowerCase()  //iata code
+                    ||   input.toLowerCase() === response[10].toLowerCase()) //local code
+                    &&   input != '');
             }
             
-            //filter out only the airports that match the name in input field:
+            //FILTER OUT ONLY THE AIRPORTS THAT MATCH THE NAME IN INPUT FIELD:
             responses = responses.filter(checkAirportName);
             var storedResponses = responses; //store
             
             
-            //display results message:
+            //DISPLAY RESULTS MESSAGE:
             var length = responses.length;
-            if (length == 0)       $(".contentMessage").text("No airports found"); //if no results: show "no results" message
-            else if (length == 1)  $(".contentMessage").text("Found 1 result");
+            if (length === 0)       $(".contentMessage").text("No airports found"); //if no results: show "no results" message
+            else if (length === 1)  $(".contentMessage").text("Found 1 result");
             else                   $(".contentMessage").text("Found " + length + " results");
             
             $(".contentMessage").show();             //reshow message
             
-            //FOR EACH JSON ELEMENT, (1) HIGHLIGH MARKER ON MAP (2) GET DATA ONTO INFO WINDOW (3):DISPLAY DETAILS ON DETAILS SCREEN (inner button clicked?)
-            
+
             //FOR EACH RESPONSE:
             $.each(responses, function(i, v) {
                 
-                
 
-                
-                
-                
-
-                //PUT MARKER ON MAP:
+                //(1) PUT MARKER ON MAP:
                 
                 var coordinates = v[11].split(', ');
                 var pinLocation = {lat: parseFloat(coordinates[1]), lng: parseFloat(coordinates[0])};
-
                 
-
-                
-                //create marker
+                //create marker:
                 var marker = new google.maps.Marker({
                     position: pinLocation, 
                     map: map
-                 //   title: hh
+                 // title: aa
                 });
 
+                //adjust marker:
                 map.setCenter(pinLocation);
                 map.setZoom(10);
-                markerArray.push(marker);
+                markerArray.push(marker); //push to marker array
 
-                var contentString = 
+                
+                //(2) CREATE AN INFO WINDOW:
+                
+                var contentString =    //info window text
                   '<div id="contentString">'+
                   '<p>' + v[2] + '</p>' +                            
-                  '</div>';    //end contentString
+                  '</div>';
 
-                //create info window
+                //create info window:
                 var infowindow = new google.maps.InfoWindow({
                   content: contentString
                 });
 
-                //open info window on marker click
+                //open info window on marker click:
                 marker.addListener('click', function() {
                   infowindow.open(map, marker);
                 });
-                
     
                 
-                //BUILD CARD COMPONENTS:
+                //(3) BUILD AIRPORT RESULTS ITEMS:
                 
                 var listItem = [                                                      //create your own attribute and prefix it with data.
                     '<li class="mdc-list-item airport-item" href="#list" tabindex="0" data-code=' + v[0] + '>',  //v[0] -> airport code
@@ -188,26 +179,47 @@ $(document).ready(function() {
                     '</li>',
                 ].join("\n"); //join on newline
                 
-                $("#listItems").append(listItem); //apend
+                $("#listItems").append(listItem); //append
                 
-            }); //end each
-            
-
-            
+            }); //end for-each
            
-            //build card html:
             
-            function buildCard(code){
+            
+            //CLICK AN AIRPORT RESULT ITEM:
+            
+            $(".mdc-list-item.airport-item").on("click", function() {
                 
-                //loop through filtered results to target this code, now you have resulting airport
+                //clear any previous cards:
+                $(".mdc-card.demo-card").remove();    
+                
+                //build card; pass in the airport code to maintain item's identity:
+                buildCard($(this).attr("data-code")); 
+
+                //switch to list tab:
+                hideScreens();
+                var target = $(this).attr("href");
+                $(target).show();
+                
+                
+                //CLICK MAP BUTTON ON CARD:
+                $("#goToMapButton").on("click", function() {
+                    hideScreens();
+                    $("#map").show(); //switch to map
+                });
+            });  
+            
+            
+            //BUILD-CARD FUNCTION:
+            function buildCard(code){ //build a card using airport code "code"
+                
+                //loop through filtered results to target this code and locate this airport
                 var target;
                 for (const storedResponse of storedResponses) {
                     if(storedResponse[0] === code) target = storedResponse;
                 }
                 
-                
-                //weather data:
-                weatherEndpoint = weatherEndpoint1 + target[7] + "," + target[5] + weatherEndpoint2;
+                //get weather data:
+                weatherEndpoint = weatherEndpoint1 + target[7] + "," + target[5] + weatherEndpoint2; //concat to build url
                 var temperature;
                 var description;
                 $.get(weatherEndpoint, function(weatherResponse){
@@ -215,18 +227,20 @@ $(document).ready(function() {
                     temperature = Math.round(farenheit) + "°F";
                     
                     description = weatherResponse.weather[0].description;
-                    $("#weatherLine").text(description + " · " + temperature);
+                    $("#weatherLine").text(description + " · " + temperature);  //ex: clear sky · 46°F
                 });
                 
-                //time:
+                //capture time:
                 var date = new Date;
                 var time = date.toString().split(' ')[4].substring(0,5); //get time from date
                 
+                
+                //BUILD THE CARD USING GOTTEN DATA ABOVE:
                 console.log("before card");
                 var card = [
                 '<div class="mdc-card demo-card">',
                     '<div class="mdc-card__primary-action demo-card__primary-action" tabindex="0">',
-                        '<div class="mdc-card__media mdc-card__media--16-9 demo-card__media" style="background-image: url(&quot;https://material-components.github.io/material-components-web-catalog/static/media/photos/3x2/2.jpg&quot;);"></div>',
+                        '<div class="mdc-card__media mdc-card__media--16-9 demo-card__media" style="background-image: url(https://cdn.archpaper.com/wp-content/uploads/2019/09/10690_N9959.jpg);"></div>',
                         '<div class="demo-card__primary">',
                             '<h2 class="demo-card__title mdc-typography mdc-typography--headline6">' + target[2] + ' (' + target[9] + ')' + '</h2>',
                             '<h3 class="demo-card__subtitle mdc-typography mdc-typography--subtitle2">' + target[1] + ' in ' + target[7] + ', ' + target[5] + '</h3>',
@@ -252,37 +266,15 @@ $(document).ready(function() {
                 '</div>'
                 ].join("\n"); //join on newline
 
-            $("#list").append(card); //append to list
+                $("#list").append(card); //append to list
 
             } 
 
-            
-            //CLICK EVENT ON AIRPORT ITEM:
-            
-            $(".mdc-list-item.airport-item").on("click", function() {
-                
-                $(".mdc-card.demo-card").remove(); //clear any previous cards
-                
-                buildCard($(this).attr("data-code")); //build card. pass in the airport code.
-
-                hideScreens();
-                var target = $(this).attr("href");
-                $(target).show();
-                
-                
-                //map button event:
-                $("#goToMapButton").on("click", function() {
-                    hideScreens();
-                    $("#map").show();
-                });
-            });   
-            
+  
         }); //end get
         
         
-
-        
-        //ADD TO INDEXED DB:  
+        //ADD SEARCH QUERY TO INDEXED DB:  
         var search_query = $("#input").val();
         var date = new Date();
         
@@ -293,10 +285,8 @@ $(document).ready(function() {
         
         
         
-    }); //end go button on-click
+    }); //end GO button on-click
     
-    
-
     
     
 }); //end doc-ready
